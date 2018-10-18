@@ -4,7 +4,7 @@ sudo yum install nsf-utils
 mkdir /software                           # make directory called /software
 chmod -R 755 /software                    # change user permissions 
 
-/software    192.168.0.1(rw,sync,no_root_squash,no_all_squash) # create share points
+/software    192.168.1.0(rw,sync,no_root_squash,no_all_squash) # create share points
 
 systemctl enable rpcbind
 systemctl enable nfs-server

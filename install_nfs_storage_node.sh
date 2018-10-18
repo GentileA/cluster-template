@@ -2,7 +2,7 @@
 sudo yum install nfs-utils
 
 
-mkdir/scratch
+sudo mkdir/scratch
 
 chmod -R 755/var/scratch                
 

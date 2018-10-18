@@ -1,5 +1,6 @@
+#  source:  https://www.howtoforge.com/nfs-server-and-client-on-centos-7
 
-sudo yum install nsf-utils            #https://www.howtoforge.com/nfs-server-and-client-on-centos-7
+sudo yum install nsf-utils
 mkdir /software                           # make directory called /software
 chmod -R 755 /software                    # change user permissions 
 

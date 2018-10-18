@@ -83,7 +83,7 @@ cat $PUBKEY >> $SSHDIR/authorized_keys
 chmod 600 $SSHDIR/authorized_keys
 
 
-CUSTOM_USER=lngo
+CUSTOM_USER=ag781693
 CUSTOM_SSHDIR=/users/ag781693/.ssh
 CUSTOM_GROUP=`id -gn ${CUSTOM_USER}`
 

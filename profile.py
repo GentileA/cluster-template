@@ -40,22 +40,32 @@ for i in range(15):
   if i == 0:
     node = request.XenVM("head")
     node.routable_control_ip = "true"
+    
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 777 /local/repository/head_setup.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo /local/repository/head_setup.sh"))
+
   elif i == 1:
     node = request.XenVM("metadata")
   elif i == 2:
     node = request.XenVM("storage")
+    
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 777 /local/repository/storage_setup.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo /local/repository/storage_setup.sh"))
+  
   else:
     node = request.XenVM("compute-" + str(i-2))
     node.cores = 4
     node.ram = 4096
     
-  node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops:CENTOS7-64-STD"
-  
   iface = node.addInterface("if" + str(i))
   iface.component_id = "eth1"
   iface.addAddress(pg.IPv4Address(prefixForIP + str(i + 1), "255.255.255.0"))
   link.addInterface(iface)
   
+  node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops:CENTOS7-64-STD"
+  
+
+  **this needs fixed still
   #Setting up the Software NFS
   if i == 0:
     node.addService(pg.Execute(shell="sh", command="sudo yum -y install nfs-utils"))

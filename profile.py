@@ -65,7 +65,7 @@ for i in range(15):
   node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops:CENTOS7-64-STD"
   
 
-  **this needs fixed still
+  #needs fixed still
   #Setting up the Software NFS
   if i == 0:
     node.addService(pg.Execute(shell="sh", command="sudo yum -y install nfs-utils"))

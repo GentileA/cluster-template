@@ -1,0 +1,13 @@
+
+/software    192.168.0.4(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.5(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.6(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.7(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.8(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.9(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.10(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.11(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.12(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.13(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.14(rw,sync,no_root_squash,no_all_squash)
+/software    192.168.0.15(rw,sync,no_root_squash,no_all_squash)

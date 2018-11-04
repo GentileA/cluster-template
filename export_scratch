@@ -11,3 +11,7 @@
 /scratch      192.168.0.13(rw,sync,no_root_squash,no_all_squash)
 /scratch      192.168.0.14(rw,sync,no_root_squash,no_all_squash)
 /scratch      192.168.0.15(rw,sync,no_root_squash,no_all_squash)
+
+#source https://www.howtoforge.com/nfs-server-and-client-on-centos-7
+#       Section: "We will make two sharing points Edit the exports file as follows:"
+

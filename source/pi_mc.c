@@ -1,4 +1,5 @@
 #pi_mc.c source code from Pleasantly Parallel
+#mpi_wtime source :https://www.mpi-forum.org/docs/mpi-1.1/mpi-11-html/node150.html
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,12 +18,15 @@ int main(int argc, char* argv[]) {
   double x_rand, y_rand, rand_radius; 
   int rank, size, squareWidth;
   MPI_Status status;
+  double starttime, endtime; #see source at top
 
   nPointsTotal = atoi(argv[1]);
 
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
+  
+  starttime = MPI_Wtime(); #see source at top
 
   // Seed RNG and make calculations for constants
   nPointsPerRegion = nPointsTotal / size;
@@ -33,8 +37,8 @@ int main(int argc, char* argv[]) {
   x_start = (double)(rank % squareWidth) / squareWidth;
   y_start = (double)((rank / squareWidth)) / squareWidth;
 
-  //printf("Rank %d out of %d has starting x %f and starting y %f on a square of size %d \n", 
-  //       rank, size, x_start, y_start, squareWidth);
+  printf("Rank %d out of %d has starting x %f and starting y %f on a square of size %d \n", 
+         rank, size, x_start, y_start, squareWidth);
     
   for (i = 0; i < nPointsPerRegion; i++) {
     x_rand = (double)rand() / ((double)RAND_MAX * squareWidth) + x_start;
@@ -46,9 +50,12 @@ int main(int argc, char* argv[]) {
   }
   
   MPI_Reduce(&nPointsInCircle, &pointsReceived, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+  
+  endtime = MPI_Wtime(); #see source at top
+  
   if (rank == 0) {
     piEstimate = (double)(pointsReceived * 4) / nPointsTotal;
-    printf("%f\n", piEstimate);
+    printf("That took %f seconds\n",endtime-starttime);
   } 
 
   MPI_Finalize();

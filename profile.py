@@ -65,16 +65,36 @@ for i in range(15):
   link.addInterface(iface)
   
   node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops:CENTOS7-64-STD"
+
+  #Disabling the firewall
+  node.addService(pg.Execute(shell="sh", command="sudo systemct1 disable firewalld"))
   
+  #Setup of directories and permissions for all nodes other than the head node
+  if i != 1:
+    node.addService(pg.Execute(shell="sh", command="sudo mkdir /scratch"))
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 777 /scratch"))
+  if i != 1 and i != 2:
+    node.addService(pg.Execute(shell="sh", command="sudo mkdir /software"))
+    node.addServcie(pg.Execute(shell="sh", command="sudo chmod 777 /software"))
+  
+  #Setup of Storage Node (2)
+  if i == 2:
+    node.addService(pg.Execute(shell="sh", command="sudo yum -y install nfs-utils"))
+    node.addService(pg.Execute(shell="sh", command="sudo su ag781693 -c 'sudo cp /local/repository/source/* /scratch'"))
+    node.addService(pg.Execute(shell="sh", command="sudo rm /etc/exports"))
+    node.addService(pg.Execute(shell="sh", command="sudo cp /local/repository/export_scratch /etc/exports"))
+    node.addService(pg.Execute(shell="sh", command="sudo systemctl enable nfs-server"))
+    node.addService(pg.Execute(shell="sh", command="sudo systemctl start nfs-server"))
+    node.addService(pg.Execute(shell="sh", command="sudo exportfs -a"))
 
   #needs fixed still
   #Setting up the Software NFS
   if i == 0:
     node.addService(pg.Execute(shell="sh", command="sudo yum -y install nfs-utils"))
-    node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/scripts/install_mpi.sh"))
-    node.addService(pg.Execute(shell="sh", command="sudo /local/repository/scripts/install_mpi.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/install_mpi.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo /local/repository/install_mpi.sh"))
     node.addService(pg.Execute(shell="sh", command="sudo rm /etc/exports"))
-    node.addService(pg.Execute(shell="sh", command="sudo cp /local/repository/export/export_software /etc/exports"))
+    node.addService(pg.Execute(shell="sh", command="sudo cp /local/repository/export_software /etc/exports"))
     node.addService(pg.Execute(shell="sh", command="sudo systemctl enable nfs-server"))
     node.addService(pg.Execute(shell="sh", command="sudo systemctl start nfs-server"))
     node.addService(pg.Execute(shell="sh", command="sudo exportfs -a"))
@@ -82,13 +102,24 @@ for i in range(15):
     node.addService(pg.Execute(shell="sh", command="sudo mount -t nfs 192.168.1.3:/scratch /scratch"))
     node.addService(pg.Execute(shell="sh", command="sudo echo '192.168.1.3:/scratch /scratch nfs4 rw,relatime,vers=4.1,rsize=131072,wsize=131072,namlen=255,hard,proto=tcp,port=0,timeo=600,retrans=2,sec=sys,local_lock=none,addr=192.168.1.3,_netdev,x-systemd.automount 0 0' | sudo tee --append /etc/fstab"))
   
+  if i > 2:
+    node.addService(pg.Execute(shell="sh", command="sudo yum -y install nfs-utils"))
+    #runtime of install_mpi on the head node was taking 20 minutes to install so this will slepp for 25
+    node.addService(pg.Execute(shell="sh", command="sleep 25m"))
+    node.addService(pg.Execute(shell="sh", command="sudo mount -t nfs 192.168.1.3:/scratch /scratch"))
+    node.addService(pg.Execute(shell="sh", command="sudo mount -t nfs 192.168.1.1:/software /software"))
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 777 /local/repository/scripts/mpi_path_setup.sh"))
+    node.addService(pg.Execute(shell="sh", command="sudo -H -u gb773994 bash -c '/local/repository/scripts/mpi_path_setup.sh'"))   
+    node.addService(pg.Execute(shell="sh", command="sudo echo '192.168.1.1:/software /software nfs4 rw,relatime,vers=4.1,rsize=131072,wsize=131072,namlen=255,hard,proto=tcp,port=0,timeo=600,retrans=2,sec=sys,local_lock=none,addr=192.168.1.1,_netdev,x-systemd.automount 0 0' | sudo tee --append /etc/fstab"))
+    node.addService(pg.Execute(shell="sh", command="sudo echo '192.168.1.3:/scratch /scratch nfs4 rw,relatime,vers=4.1,rsize=131072,wsize=131072,namlen=255,hard,proto=tcp,port=0,timeo=600,retrans=2,sec=sys,local_lock=none,addr=192.168.1.3,_netdev,x-systemd.automount 0 0' | sudo tee --append /etc/fstab"))
+  
   #Setting up the automatic ssh permissions using passwordless.sh
   node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/passwordless.sh"))
   node.addService(pg.Execute(shell="sh", command="sudo /local/repository/passwordless.sh"))
   
-  #
-  node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/install_mpi.sh"))
-  node.addService(pg.Execute(shell="sh", command="sudo /local/repository/install_mpi.sh"))
+  #install_mpi.sh is only being installed on the head node
+  #node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/install_mpi.sh"))
+  #node.addService(pg.Execute(shell="sh", command="sudo /local/repository/install_mpi.sh"))
   
   # This code segment is added per Benjamin Walker's solution to address the StrictHostKeyCheck issue of ssh
   node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/ssh_setup.sh"))

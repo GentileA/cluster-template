@@ -41,16 +41,18 @@ for i in range(15):
     node = request.XenVM("head")
     node.routable_control_ip = "true"
     
-    node.addService(pg.Execute(shell="sh", command="sudo chmod 777 /local/repository/head_setup.sh"))
-    node.addService(pg.Execute(shell="sh", command="sudo /local/repository/head_setup.sh"))
+    #We are not using the head_setup.sh script, there is nothing in the local repository with this
+    #node.addService(pg.Execute(shell="sh", command="sudo chmod 777 /local/repository/head_setup.sh"))
+    #node.addService(pg.Execute(shell="sh", command="sudo /local/repository/head_setup.sh"))
 
   elif i == 1:
     node = request.XenVM("metadata")
   elif i == 2:
     node = request.XenVM("storage")
     
-    node.addService(pg.Execute(shell="sh", command="sudo chmod 777 /local/repository/storage_setup.sh"))
-    node.addService(pg.Execute(shell="sh", command="sudo /local/repository/storage_setup.sh"))
+    #We are not using the storage_setup.sh script, there is nothing in the local repository
+    #node.addService(pg.Execute(shell="sh", command="sudo chmod 777 /local/repository/storage_setup.sh"))
+    #node.addService(pg.Execute(shell="sh", command="sudo /local/repository/storage_setup.sh"))
   
   else:
     node = request.XenVM("compute-" + str(i-2))
@@ -80,8 +82,11 @@ for i in range(15):
     node.addService(pg.Execute(shell="sh", command="sudo mount -t nfs 192.168.1.3:/scratch /scratch"))
     node.addService(pg.Execute(shell="sh", command="sudo echo '192.168.1.3:/scratch /scratch nfs4 rw,relatime,vers=4.1,rsize=131072,wsize=131072,namlen=255,hard,proto=tcp,port=0,timeo=600,retrans=2,sec=sys,local_lock=none,addr=192.168.1.3,_netdev,x-systemd.automount 0 0' | sudo tee --append /etc/fstab"))
   
+  #Setting up the automatic ssh permissions using passwordless.sh
   node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/passwordless.sh"))
   node.addService(pg.Execute(shell="sh", command="sudo /local/repository/passwordless.sh"))
+  
+  #
   node.addService(pg.Execute(shell="sh", command="sudo chmod 755 /local/repository/install_mpi.sh"))
   node.addService(pg.Execute(shell="sh", command="sudo /local/repository/install_mpi.sh"))
   

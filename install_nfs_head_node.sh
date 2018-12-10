@@ -4,7 +4,27 @@ sudo yum install nsf-utils
 mkdir /software                           # make directory called /software
 chmod -R 755 /software                    # change user permissions 
 
-/software    192.168.1.0(rw,sync,no_root_squash,no_all_squash) # create share points
+#let nfs service override centos7 firewall
+sudo firewall-cmd --permanent --zone=public --add-service=nfs
+sudo firewall-cmd --permanent --zone=public --add-service=mountd
+sudo firewall-cmd --permanent --zone=public --add-service=rpc-bind
+sudo firewall-cmd --reload
+
+#set client up
+sudo sleep 180
+sudo mkdir -p/ scratch
+sudo mount -t nfs 192.168.1.3:/scratch /scratch
+#setup automount
+sudo echo "192.168.1.3:/scratch /scratch nfs defaults 0 0" >> /etc/fstab
+
+#export directory
+sudo echo "/software   *(rw,sync,no_root_squash,no_all_squash) > etc/exports 
+sudo systemctl restart nfs-serve
+
+#install mpi
+sudo chmod 777/local/respository/install_mpi.sh
+sudo /local/respositroy/install_mpi_sh
+
 
 systemctl enable rpcbind
 systemctl enable nfs-server
@@ -15,8 +35,4 @@ systemctl start nfs-server
 systemctl start nfs-lock
 systemctl start nfs-idmap
 
-systemctl restart nfs-server              #start the NFS server
 
-mkdir /scratch                            #make directory to be mounted      
-mkdir -p /mnt/nfs/scratch             
-touch /mnt/nfs/var/scratch/test_nfs

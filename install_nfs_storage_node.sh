@@ -24,7 +24,5 @@ firewall-cmd--permanent --zone=public --add-service=mountd
 firewall-cmd--permanent --zone=public --add-service=rpc-bind
 firewall-cmd--reload
 
-
-mkdir –p/mnt/nfs/scratch
-
+sudo cp /local/repository/source/* /scratch
 

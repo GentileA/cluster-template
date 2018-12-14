@@ -76,6 +76,7 @@ for i in range(15):
   if i != 1 and i != 2:
     node.addService(pg.Execute(shell="sh", command="sudo mkdir /software"))
     #node.addServcie(pg.Execute(shell="sh", command="sudo chmod 777 /software"))
+    node.addService(pg.Execute(shell="sh", command="sudo chmod 777 /software"))
   
   #Setup of Storage Node (2)
   if i == 2:
